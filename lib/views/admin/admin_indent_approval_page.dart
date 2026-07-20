@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/firebase_service.dart';
 import '../../services/ai_service.dart';
 import '../../models/request.dart';
+import '../../models/inventory_item.dart';
 import 'package:med_supply_prototype/constants/colors.dart';
 
 class AdminIndentApprovalPage extends ConsumerStatefulWidget {
@@ -24,6 +25,7 @@ class _AdminIndentApprovalPageState
     try {
       final firebaseService = ref.read(firebaseServiceProvider);
       final aiService = ref.read(aiServiceProvider);
+      final inventory_item = ref.read(inventory_item);
 
       // Fetch facility inventory for context
       final inventory =
@@ -44,7 +46,11 @@ class _AdminIndentApprovalPageState
       if (request.quantity > (predictedDemand * 1.5)) {
         suggestion =
             '⚠️ REDUCE: Request is 50%+ higher than predicted 30-day demand ($predictedDemand).';
-      } else if (currentItem.remainingQuantity > predictedDemand) {
+      } else if (inventory_item.remainingQuantity < request.quantity) {
+        suggestion = 
+            '⚠️ DECLINE: Not enough stock available in the inventory.';
+      }
+      else if (currentItem.remainingQuantity > predictedDemand) {
         suggestion =
             '⚠️ DECLINE: Facility already has enough stock (${currentItem.remainingQuantity}) for predicted demand ($predictedDemand).';
       } else {
