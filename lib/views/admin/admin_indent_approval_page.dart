@@ -49,8 +49,7 @@ class _AdminIndentApprovalPageState
       } else if (inventory_item.remainingQuantity < request.quantity) {
         suggestion = 
             '⚠️ DECLINE: Not enough stock available in the inventory.';
-      }
-      else if (currentItem.remainingQuantity > predictedDemand) {
+      } else if (currentItem.remainingQuantity > predictedDemand) {
         suggestion =
             '⚠️ DECLINE: Facility already has enough stock (${currentItem.remainingQuantity}) for predicted demand ($predictedDemand).';
       } else {
